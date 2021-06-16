@@ -3,10 +3,9 @@ package com.tw.comprehensive;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 class TradingServiceTest {
 
@@ -26,5 +25,19 @@ class TradingServiceTest {
         // then
         verify(spyAuditService).logNewTrade(trade);
 
+    }
+
+    //Check if findTrade() of auditService returns same value as the one findById() returned of TradeRepository
+    @Test
+    public void should_return_same_value_when_findTrade_and_findById(){
+        // given
+        AuditService auditService = new AuditService();
+        TradeRepository tradeRepository = mock(TradeRepository.class);
+        Trade trade = new Trade("King","Queue");
+        when(tradeRepository.findById(anyLong())).thenReturn(trade);
+        // when
+        TradingService tradingService = new TradingService(tradeRepository,auditService);
+        // then
+        assertEquals(trade,tradingService.findTrade(1L));
     }
 }
